@@ -10,16 +10,14 @@ from setuptools import Command
 
 try:
     import numpy
-    # from numpy.distutils.command import build, install_data
-    # from numpy.distutils.core import setup
+    from numpy.distutils.command import build, install_data
+    from numpy.distutils.core import setup
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
-    # from distutils.command import build, install_data
-    # from distutils.core import setup
+    from distutils.command import build, install_data
+    from setuptools import setup
 
-from distutils.command import build, install_data
-from setuptools import setup
 import io
 import os
 import subprocess
@@ -293,6 +291,11 @@ class MyDevelop(develop.develop):
     def run(self):
         # Make sure that the 'build_src' command will
         # always be inplace when we do a 'develop'.
+        # TODO: Forgive me father
+        from numpy.distutils.core import numpy_cmdclass
+
+        self.distribution.cmdclass.update(numpy_cmdclass)
+
         self.reinitialize_command('build_src', inplace=1)
 
         # tvtk_classes.zip always need to be created on 'develop'.
@@ -408,6 +411,12 @@ config['packages'] += packages
 #     print('*'*80)
 #     raise RuntimeError(msg)
 
+# Because of some numpy and windows api bug numpy get corrupted if this is built on windows
+setup_requires = info['__requires__']
+np_id = setup_requires.index('numpy')
+setup_requires.pop(np_id)
+setup_requires.insert(np_id, 'numpy==1.19.2')
+
 
 # The actual setup call
 if __name__ == '__main__':
@@ -470,7 +479,7 @@ if __name__ == '__main__':
         extras_require=info['__extras_require__'],
         include_package_data=True,
         install_requires=info['__requires__'],
-        setup_requires=info['__requires__'],
+        setup_requires=setup_requires,
         license="BSD",
         long_description=io.open('README.rst', encoding='utf-8').read(),
         platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],
