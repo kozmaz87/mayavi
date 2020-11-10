@@ -10,13 +10,16 @@ from setuptools import Command
 
 try:
     import numpy
-    from numpy.distutils.command import build, install_data
-    from numpy.distutils.core import setup
+    # from numpy.distutils.command import build, install_data
+    # from numpy.distutils.core import setup
     HAS_NUMPY = True
 except ImportError:
     HAS_NUMPY = False
-    from distutils.command import build, install_data
-    from distutils.core import setup
+    # from distutils.command import build, install_data
+    # from distutils.core import setup
+
+from distutils.command import build, install_data
+from setuptools import setup
 import io
 import os
 import subprocess
@@ -396,14 +399,14 @@ packages = setuptools.find_packages(exclude=config['packages'] +
 config['packages'] += packages
 
 
-if MODE != 'info' and not HAS_NUMPY:
-    msg = '''
-    Numpy is required to build Mayavi correctly, please install it first.
-    '''
-    print('*'*80)
-    print(msg)
-    print('*'*80)
-    raise RuntimeError(msg)
+# if MODE != 'info' and not HAS_NUMPY:
+#     msg = '''
+#     Numpy is required to build Mayavi correctly, please install it first.
+#     '''
+#     print('*'*80)
+#     print(msg)
+#     print('*'*80)
+#     raise RuntimeError(msg)
 
 
 # The actual setup call
@@ -467,6 +470,7 @@ if __name__ == '__main__':
         extras_require=info['__extras_require__'],
         include_package_data=True,
         install_requires=info['__requires__'],
+        setup_requires=info['__requires__'],
         license="BSD",
         long_description=io.open('README.rst', encoding='utf-8').read(),
         platforms=["Windows", "Linux", "Mac OS-X", "Unix", "Solaris"],

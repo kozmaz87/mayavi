@@ -16,3 +16,7 @@ docs/build/
 docs/html.zip
 tvtk/tvtk_classes.zip
 mayavi/images/m2_about.jpg
+
+.eggs/
+venv/
+.idea/
