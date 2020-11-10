@@ -412,7 +412,7 @@ config['packages'] += packages
 #     raise RuntimeError(msg)
 
 # Because of some numpy and windows api bug numpy get corrupted if this is built on windows
-setup_requires = info['__requires__']
+setup_requires = info['__requires__'].copy()
 np_id = setup_requires.index('numpy')
 setup_requires.pop(np_id)
 setup_requires.insert(np_id, 'numpy==1.19.2')
